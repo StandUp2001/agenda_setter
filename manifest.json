@@ -1,0 +1,21 @@
+{
+  "manifest_version": 3,
+  "name": "Agenda Setter",
+  "description": "Sets info for your agenda",
+  "version": "1.0",
+  "action": {
+    "default_title": "Agenda Setter"
+  },
+  "background": {
+    "service_worker": "scripts/background.js",
+    "type": "module"
+  },
+  "host_permissions": ["https://calendar.google.com/*"],
+  "permissions": ["tabs", "scripting"],
+  "content_scripts": [
+    {
+      "matches": ["https://calendar.google.com/*"],
+      "js": ["scripts/contentScript.js"]
+    }
+  ]
+}
