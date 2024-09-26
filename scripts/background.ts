@@ -1,4 +1,3 @@
-
 chrome.action.onClicked.addListener((tab) => {
     // Do something when the extension is clicked
     console.log("Extension icon clicked!");
