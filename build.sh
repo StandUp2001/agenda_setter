@@ -2,6 +2,7 @@ if [ -z "$1" ]; then
     echo "Usage: ./build.sh <command>"
     echo "Commands:"
     echo "  build: Build the project"
+    echo "  clean: Clean the project"
     exit 1
 fi
 
