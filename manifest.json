@@ -3,6 +3,7 @@
   "name": "Agenda Setter",
   "description": "Sets info for your agenda",
   "version": "1.0",
+  "author": "Stan van Dijk",
   "action": {
     "default_title": "Agenda Setter",
     "default_icon": {

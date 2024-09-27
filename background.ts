@@ -1,3 +1,8 @@
+// Author: Stan van Dijk
+// Last modified by: Stan van Dijk
+// Description: This file contains the background script for the extension.
+// Date last modified: 2024-09-27
+
 chrome.action.onClicked.addListener((tab) => {
     if (!tab || !tab.id) {
         console.error("No tab found");
