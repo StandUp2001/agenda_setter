@@ -19,9 +19,14 @@
     "128": "./icons/128.png"
   },
   "background": {
-    "service_worker": "./scripts/background.js",
+    "service_worker": "./background.js",
     "type": "module"
   },
-  "host_permissions": ["https://calendar.google.com/*"],
-  "permissions": ["tabs", "scripting"]
+  "host_permissions": [
+    "https://calendar.google.com/*"
+  ],
+  "permissions": [
+    "tabs",
+    "scripting"
+  ]
 }

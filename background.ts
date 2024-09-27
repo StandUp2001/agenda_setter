@@ -6,7 +6,10 @@ chrome.action.onClicked.addListener((tab) => {
 
     chrome.scripting.executeScript({
         target: { tabId: tab.id },
-        func: () => {
+        func: async () => {
+            type Div = HTMLDivElement;
+            type Input = HTMLInputElement;
+            type Span = HTMLSpanElement;
 
             enum SearchType {
                 ARIA_LABEL = "aria-label",
@@ -24,8 +27,8 @@ chrome.action.onClicked.addListener((tab) => {
             }
 
             const getRootDiv = () => {
-                const divs = document.body.getElementsByTagName("div") as HTMLCollectionOf<HTMLDivElement>;
-                const possible: HTMLDivElement[] = [];
+                const divs = document.body.getElementsByTagName("div") as HTMLCollectionOf<Div>;
+                const possible: Div[] = [];
                 for (let i = 0; i < divs.length; i++) {
                     const div = divs[i];
                     if (div.role !== "dialog") continue;
@@ -54,10 +57,15 @@ chrome.action.onClicked.addListener((tab) => {
             const data_keys: { [key: string]: Language } = {
                 "location": new Language("location"),
                 "description": new Language("description"),
+                "start": new Language("startDate"),
+                "stime": new Language("startTime"),
+                "etime": new Language("endTime"),
             };
 
-            function getElement<T>(el: Element, search_element: string, search: string, search_type: SearchType = SearchType.ARIA_LABEL): T | null {
-                if (!el) return null;
+            const ab_hours = new Language("hrs", "uur"); // This is for more than 1 hour
+
+            function getElement<T>(search_element: string, search: string, search_type: SearchType = SearchType.ARIA_LABEL): T | null {
+                if (!div) return null;
                 let language: Language | undefined = undefined;
                 switch (search_type) {
                     case SearchType.ARIA_LABEL:
@@ -74,41 +82,58 @@ chrome.action.onClicked.addListener((tab) => {
                     console.error("Search not found", search);
                     return null;
                 }
-                const element = el.querySelector(`${search_element}[${search_type}="${language.en}"]`) as T | null;
+                const element = div.querySelector(`${search_element}[${search_type}="${language.en}"]`) as T | null;
                 if (element) return element;
-                return el.querySelector(`${search_element}[${search_type}="${language.nl}"]`) as T | null;
+                return div.querySelector(`${search_element}[${search_type}="${language.nl}"]`) as T | null;
             }
 
             const div = getRootDiv();
             if (!div) return;
 
             // Title
-            const title_el = getElement<HTMLInputElement>(div, "input", "title");
+            const title_el = getElement<Input>("input", "title");
             if (!title_el) return;
             title_el.value = "[NAAM] naar de trimsalon";
 
+            // All day
+            const day_el = getElement<Input>("input", "day");
+            if (!day_el) return;
+            if (day_el.checked) day_el.click();
+
             // Location
-            const location_el = getElement<HTMLSpanElement>(div, "span", "location", SearchType.DATA_KEY);
+            const location_el = getElement<Span>("span", "location", SearchType.DATA_KEY);
             if (!location_el) return
             location_el.click();
-            const location_input = getElement<HTMLInputElement>(div, "input", "location");
+            const location_input = getElement<Input>("input", "location");
             if (!location_input) return
             location_input.value = "Pets Place Boerenbond, Schuttersveld 7-A, 7514 AC Enschede, Netherlands";
             location_input.dispatchEvent(new Event("input", { bubbles: true }));
 
             // Description
-            const description_el = getElement<HTMLSpanElement>(div, "span", "description", SearchType.DATA_KEY);
+            const description_el = getElement<Span>("span", "description", SearchType.DATA_KEY);
             if (!description_el) return
             description_el.click();
-            const description_input = getElement<HTMLDivElement>(div, "div", "description");
+            const description_input = getElement<Div>("div", "description");
             if (!description_input) return
             description_input.dispatchEvent(new Event("input", { bubbles: true }));
-            description_input.innerHTML = "<div>Naam van de klant: [KLANT]</div><div>Telefoonnummer: [NUMMER]</div><div>Ras van de hond: [RAS]</div><div>Vachttype: [TYPE]</div><div>Behandeling: [BEHANDELING]</div><div>Evt medische gegevens: [MEDISCHE]</div><div>Eventuele opmerkingen: [OPMERKING]</div><div><br></div><div>*Wij maken gebruik van een no-show beleid, dit houd in dat er kosten rekening gebracht kunnen worden als u niet komt opdagen of zich niet tijdig afmeld. Kijk de voorwaarden in de bijlage van deze pagina.</div>";
+            description_input.innerHTML = "<div>Naam van de klant: </div><div>Telefoonnummer: </div><div>Ras van de hond: </div><div>Vachttype: </div><div>Behandeling: </div><div>Evt medische gegevens: </div><div>Eventuele opmerkingen: </div><div><br></div><div>*Wij maken gebruik van een no-show beleid, dit houd in dat er kosten rekening gebracht kunnen worden als u niet komt opdagen of zich niet tijdig afmeld. Kijk de voorwaarden in de bijlage van deze pagina.</div>";
 
-            // All day
-            const day_el = getElement<HTMLInputElement>(div, "input", "day");
-            if (!day_el) return;
-            if (day_el.checked) day_el.click();
+            // End time
+            const end_time_el = getElement<Input>("input", "etime");
+            if (!end_time_el) return;
+            end_time_el.click();
+            const div_options = getElement<Div>("div", "etime");
+            if (!div_options) return;
+            for (let i = 0; i < div_options.children.length; i++) {
+                const child = div_options.children[i] as Div;
+                const splitted = child.innerText.split(" ");
+                const stripped = `${splitted[1]} ${splitted[2]}`;
+                if (stripped === `(2 ${ab_hours.en})` || stripped === `(2 ${ab_hours.nl})`) {
+                    console.log("Found 2 hours");
+                    child.click();
+                    break;
+                }
+            }
         }
     });
 });
