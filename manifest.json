@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Agenda Setter",
   "description": "Sets info for your agenda",
-  "version": "1.0",
+  "version": "0.1",
   "author": "Stan van Dijk",
   "action": {
     "default_title": "Agenda Setter",

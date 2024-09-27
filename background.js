@@ -34,7 +34,7 @@ chrome.action.onClicked.addListener((tab) => {
                     possible.push(div);
                 }
                 if (possible.length !== 1) {
-                    console.log("No dialogs found or multiple dialogs found");
+                    console.error("No dialogs found or multiple dialogs found");
                     return;
                 }
                 const div = possible[0];
@@ -130,7 +130,6 @@ chrome.action.onClicked.addListener((tab) => {
                 const splitted = child.innerText.split(" ");
                 const stripped = `${splitted[1]} ${splitted[2]}`;
                 if (stripped === `(2 ${ab_hours.en})` || stripped === `(2 ${ab_hours.nl})`) {
-                    console.log("Found 2 hours");
                     child.click();
                     break;
                 }

@@ -4,13 +4,18 @@ This is a simple extension to use for Google Calendar. It will allow you to set 
 
 ## Installation
 
+### Download the zip
+
+1. Download the zip from the [pre-release](https://github.com/StandUp2001/agenda_setter/releases/tag/0.1)
+2. Extract the zip
+
 ### Clone the repository
 
 ```bash
 git clone https://github.com/StandUp2001/agenda_setter.git
 ```
 
-### Load the extension
+## Load the extension
 
 1. Open Chrome and go to `chrome://extensions/`
 2. Enable Developer Mode
